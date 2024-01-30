@@ -28,7 +28,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [isImagePopup, setIsImagePopup] = useState(false);
   const [isLoadingPopup, setIsLoadingPopup] = useState(false);
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({}); 
   const [cards, setCards] = useState([]);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [delCardId, setDelCardId] = useState("");
@@ -39,11 +39,12 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
+      const jwtToken = localStorage.getItem("jwt");
       setIsLoadingCards(true);
-      Promise.all([api.getUserInfo(), api.getInitialCards()])
+      Promise.all([api.getUserInfo(jwtToken), api.getInitialCards(jwtToken)])
         .then(([userData, cardData]) => {
           setCurrentUser(userData);
-          setCards(cardData);
+          setCards(cardData.reverse());
           setIsLoadingCards(false);
         })
         .catch((error) => console.error(`Ошибка при загрузке данных ${error}`));
@@ -70,10 +71,10 @@ function App() {
   };
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);//
 
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(card._id, !isLiked, localStorage.getItem("jwt"))
       .then((newCard) => {
         setCards((state) =>
           state.map((c) => (c._id === card._id ? newCard : c))
@@ -82,11 +83,37 @@ function App() {
       .catch((error) => console.error(`Ошибка при установке лайка ${error}`));
   }
 
+  // const handleCardLike = React.useCallback(
+  //   (card) => {
+  //     const isLike = card.likes.some((element) => currentUser._id === element);
+  //     if (isLike) {
+  //       api
+  //         .deleteCardLike(card._id, localStorage.jwt)
+  //         .then((res) => {
+  //           setCards((state) =>
+  //             state.map((c) => (c._id === card._id ? res : c))
+  //           );
+  //         })
+  //         .catch((err) => console.log(err));
+  //     } else {
+  //       api
+  //         .setCardLike(card._id, localStorage.jwt)
+  //         .then((res) => {
+  //           setCards((state) =>
+  //             state.map((c) => (c._id === card._id ? res : c))
+  //           );
+  //         })
+  //         .catch((err) => console.log(err));
+  //     }
+  //   },
+  //   [currentUser._id]
+  // );
+
   function handleCardDel(evt) {
     evt.preventDefault();
     setIsLoadingPopup(true);
     api
-      .deleteCard(delCardId)
+      .deleteCard(delCardId, localStorage.getItem("jwt"))
       .then(() => {
         setCards((cards) => cards.filter((card) => card._id !== delCardId));
         closeAllPopups();
@@ -115,7 +142,7 @@ function App() {
 
   function handleUpdateUser(userData, resetForm) {
     handleSubmit(
-      () => api.sendUserInfo(userData).then((res) => setCurrentUser(res)),
+      () => api.sendUserInfo(userData, localStorage.getItem("jwt")).then((res) => setCurrentUser(res)),
       resetForm,
       "Ошибка при редактировании профиля"
     );
@@ -123,7 +150,7 @@ function App() {
 
   function handleUpdateAvatar(userData, resetForm) {
     handleSubmit(
-      () => api.setUserAvatar(userData).then((res) => setCurrentUser(res)),
+      () => api.setUserAvatar(userData, localStorage.getItem("jwt")).then((res) => setCurrentUser(res)),
       resetForm,
       "Ошибка при редактировании аватара"
     );
@@ -133,7 +160,7 @@ function App() {
     handleSubmit(
       () =>
         api
-          .sendNewCardInfo(cardData)
+          .sendNewCardInfo(cardData, localStorage.getItem("jwt"))
           .then((newCard) => setCards([newCard, ...cards])),
       resetForm,
       "Ошибка при добавлении новой карточки"
@@ -145,8 +172,9 @@ function App() {
     if (jwtToken) {
       getContent(jwtToken)
         .then((res) => {
-          setEmail(res.data.email);
+          setEmail(res.email);
           setIsLoggedIn(true);
+          
         })
         .catch((err) => {
           console.error(`Ошибка при повторном входе ${err}`);
@@ -184,6 +212,7 @@ function App() {
       .then((res) => {
         localStorage.setItem("jwt", res.token);
         setIsLoggedIn(true);
+        setEmail(email)
         navigate("/");
       })
       .catch((err) => {

@@ -20,23 +20,34 @@ class Api {
   }
 
   //Метод запроса информации о пользователе
-  getUserInfo() {
+  getUserInfo(token) {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: {
+        // ...this._headers, //?
+        Authorization: `Bearer ${token}`
+      }
     });
   }
-  // Метод запроса информации о пользователе
-  getInitialCards() {
+
+  
+  // Метод запроса информации о карточке
+  getInitialCards(token) {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: {
+        // ...this._headers, //?
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
   // Метод отправки информации о пользователе
-  sendUserInfo(userData) {
+  sendUserInfo(userData, token) {
     return this._request(`${this._baseUrl}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({
         name: userData.username,
         about: userData.job,
@@ -45,10 +56,13 @@ class Api {
   }
 
   // Метод установки аватара профиля
-  setUserAvatar(avatarData) {
+  setUserAvatar(avatarData, token) {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({
         avatar: avatarData.avatar,
       }),
@@ -56,10 +70,13 @@ class Api {
   }
 
   // Метод добавления новой карточки
-  sendNewCardInfo(cardData) {
+  sendNewCardInfo(cardData, token) {
     return this._request(`${this._baseUrl}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({
         name: cardData.name,
         link: cardData.link,
@@ -68,44 +85,61 @@ class Api {
   }
 
   // Метод удаления карточки
-  deleteCard(cardId) {
+  deleteCard(cardId, token) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this._headers,
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
     });
   }
 
   // // Метод установки лайков
-  // setCardLike(cardId) {
+  // setCardLike(cardId, token) {
   //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
   //     method: "PUT",
-  //     headers: this._headers,
+  //     headers: {
+  //       "Authorization": `Bearer ${token}`,
+  //     },
   //   });
   // }
 
   // // Метод удаления лайка карточки
-  // deleteCardLike(cardId) {
+  // deleteCardLike(cardId, token) {
   //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
   //     method: "DELETE",
-  //     headers: this._headers,
+  //     headers: {
+  //       "Authorization": `Bearer ${token}`,
+  //     },
   //   });
   // }
 
-  changeLikeCardStatus(cardId, isLiked) {
+  changeLikeCardStatus(cardId, isLiked, token) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: `${!isLiked ? "DELETE" : "PUT"}`,
-      headers: this._headers,
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 }
 
+
 // Создание экземпляра класса
+// const api = new Api({
+//   baseUrl: "https://mesto.nomoreparties.co/v1/cohort-77",
+//   headers: {
+//     authorization: "3edcdea5-b130-42c1-9a7c-9c803e968261",
+//     "Content-Type": "application/json",
+//   },
+// });
+
 const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-77",
-  headers: {
-    authorization: "3edcdea5-b130-42c1-9a7c-9c803e968261",
-    "Content-Type": "application/json",
-  },
+  baseUrl: "http://localhost:3000",
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
+
 
 export default api;

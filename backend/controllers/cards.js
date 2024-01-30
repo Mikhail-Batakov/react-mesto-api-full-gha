@@ -11,7 +11,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const getCards = (req, res, next) => {
   cardModel
     .find({})
-    .populate(['owner', 'likes'])
+    // .populate(['owner', 'likes'])
     .then((cards) => {
       res.status(StatusCodes.OK).send(cards);
     })
@@ -25,21 +25,22 @@ const createCard = (req, res, next) => {
       ...req.body,
     })
     .then((card) => {
+      res.status(StatusCodes.CREATED).send(card);
       // Используйте findById для поиска созданной карточки и затем выполните populate
-      cardModel
-        .findById(card._id)
-        .orFail()
-        .populate('owner')
-        .then((data) => {
-          res.status(StatusCodes.CREATED).send(data);
-        })
-        .catch((err) => {
-          if (err instanceof mongoose.Error.DocumentNotFoundError) {
-            next(new NotFoundError('Карточка по указанному id не найдена'));
-          } else {
-            next(err);
-          }
-        });
+      // cardModel
+      //   .findById(card._id)
+      //   .orFail()
+      //   .populate('owner')
+      //   .then((data) => {
+      //     res.status(StatusCodes.CREATED).send(data);
+      //   })
+      //   .catch((err) => {
+      //     if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      //       next(new NotFoundError('Карточка по указанному id не найдена'));
+      //     } else {
+      //       next(err);
+      //     }
+      //   });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -87,9 +88,9 @@ const likeCard = (req, res, next) => {
       { new: true },
     )
     .orFail()
-    .populate(['owner', 'likes'])
+    // .populate(['owner', 'likes'])
     .then((card) => {
-      res.status(StatusCodes.OK).send({ card, message: 'Лайк поставлен' });
+      res.status(StatusCodes.OK).send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
@@ -112,9 +113,9 @@ const dislikeCard = (req, res, next) => {
       { new: true },
     )
     .orFail()
-    .populate(['owner', 'likes'])
+    // .populate(['owner', 'likes'])
     .then((card) => {
-      res.status(StatusCodes.OK).send({ card, message: 'Лайк удален' });
+      res.status(StatusCodes.OK).send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
