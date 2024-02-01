@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-const { JWT_SECRET = 'super_secret_key' } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
-const chekToken = (token) => jwt.verify(token, JWT_SECRET);
+const chekToken = (token) => jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
 
-const signToken = (user) => jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+const signToken = (user) => jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
 
 module.exports = {
   chekToken,

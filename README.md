@@ -5,14 +5,12 @@
   
 Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
 
-
-[**Адрес репозитория:**](https://github.com/Mikhail-Batakov/react-mesto-api-full-gha)
+Адрес репозитория: [https://github.com/Mikhail-Batakov/react-mesto-api-full-gha](https://github.com/Mikhail-Batakov/react-mesto-api-full-gha)
 
 ## Ссылки на проект
 
-IP-адрес 158.160.144.103
+IP 158.160.144.103
 
+Frontend [https://epicm.nomoredomainsmonster.ru](https://epicm.nomoredomainsmonster.ru)
 
-[**Frontend**](http://epicm.nomoredomainsmonster.ru)
-
-[**Backend**](http://api.epicm.nomoredomainsmonster.ru)
+Backend [https://api.epicm.nomoredomainsmonster.ru](https://api.epicm.nomoredomainsmonster.ru)

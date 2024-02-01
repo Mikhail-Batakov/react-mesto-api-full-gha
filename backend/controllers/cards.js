@@ -90,7 +90,7 @@ const likeCard = (req, res, next) => {
     .orFail()
     // .populate(['owner', 'likes'])
     .then((card) => {
-      res.status(StatusCodes.OK).send(card);
+      res.status(StatusCodes.OK).send((card));
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {

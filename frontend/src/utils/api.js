@@ -23,20 +23,16 @@ class Api {
   getUserInfo(token) {
     return this._request(`${this._baseUrl}/users/me`, {
       headers: {
-        // ...this._headers, //?
         Authorization: `Bearer ${token}`
       }
     });
   }
-
-  
-  // Метод запроса информации о карточке
+  // Метод запроса информации о пользователе
   getInitialCards(token) {
     return this._request(`${this._baseUrl}/cards`, {
       headers: {
-        // ...this._headers, //?
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -45,8 +41,8 @@ class Api {
     return this._request(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name: userData.username,
@@ -60,8 +56,8 @@ class Api {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
       headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         avatar: avatarData.avatar,
@@ -74,8 +70,8 @@ class Api {
     return this._request(`${this._baseUrl}/cards`, {
       method: "POST",
       headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name: cardData.name,
@@ -89,28 +85,24 @@ class Api {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
   // // Метод установки лайков
-  // setCardLike(cardId, token) {
+  // setCardLike(cardId) {
   //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
   //     method: "PUT",
-  //     headers: {
-  //       "Authorization": `Bearer ${token}`,
-  //     },
+  //     headers: this._headers,
   //   });
   // }
 
   // // Метод удаления лайка карточки
-  // deleteCardLike(cardId, token) {
+  // deleteCardLike(cardId) {
   //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
   //     method: "DELETE",
-  //     headers: {
-  //       "Authorization": `Bearer ${token}`,
-  //     },
+  //     headers: this._headers,
   //   });
   // }
 
@@ -118,12 +110,11 @@ class Api {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: `${!isLiked ? "DELETE" : "PUT"}`,
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 }
-
 
 // Создание экземпляра класса
 // const api = new Api({
@@ -136,10 +127,12 @@ class Api {
 
 const api = new Api({
   baseUrl: "http://localhost:3000",
-  // headers: {
-  //   "Content-Type": "application/json",
-  // },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-
 export default api;
+
+
+

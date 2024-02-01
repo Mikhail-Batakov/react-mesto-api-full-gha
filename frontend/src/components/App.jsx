@@ -28,7 +28,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [isImagePopup, setIsImagePopup] = useState(false);
   const [isLoadingPopup, setIsLoadingPopup] = useState(false);
-  const [currentUser, setCurrentUser] = useState({}); 
+  const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [delCardId, setDelCardId] = useState("");
@@ -39,9 +39,8 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const jwtToken = localStorage.getItem("jwt");
       setIsLoadingCards(true);
-      Promise.all([api.getUserInfo(jwtToken), api.getInitialCards(jwtToken)])
+      Promise.all([api.getUserInfo(localStorage.getItem("jwt")), api.getInitialCards(localStorage.getItem("jwt"))])
         .then(([userData, cardData]) => {
           setCurrentUser(userData);
           setCards(cardData.reverse());
@@ -71,7 +70,7 @@ function App() {
   };
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i === currentUser._id);//
+    const isLiked = card.likes.some((i) => i === currentUser._id);
 
     api
       .changeLikeCardStatus(card._id, !isLiked, localStorage.getItem("jwt"))
@@ -82,32 +81,6 @@ function App() {
       })
       .catch((error) => console.error(`Ошибка при установке лайка ${error}`));
   }
-
-  // const handleCardLike = React.useCallback(
-  //   (card) => {
-  //     const isLike = card.likes.some((element) => currentUser._id === element);
-  //     if (isLike) {
-  //       api
-  //         .deleteCardLike(card._id, localStorage.jwt)
-  //         .then((res) => {
-  //           setCards((state) =>
-  //             state.map((c) => (c._id === card._id ? res : c))
-  //           );
-  //         })
-  //         .catch((err) => console.log(err));
-  //     } else {
-  //       api
-  //         .setCardLike(card._id, localStorage.jwt)
-  //         .then((res) => {
-  //           setCards((state) =>
-  //             state.map((c) => (c._id === card._id ? res : c))
-  //           );
-  //         })
-  //         .catch((err) => console.log(err));
-  //     }
-  //   },
-  //   [currentUser._id]
-  // );
 
   function handleCardDel(evt) {
     evt.preventDefault();
@@ -174,7 +147,6 @@ function App() {
         .then((res) => {
           setEmail(res.email);
           setIsLoggedIn(true);
-          
         })
         .catch((err) => {
           console.error(`Ошибка при повторном входе ${err}`);
@@ -233,7 +205,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header email={email} onSignOut={onSignOut} />
+        <Header email={email} onSignOut={onSignOut} isLoggedIn={isLoggedIn} />
 
         <Routes>
           <Route

@@ -142,6 +142,8 @@ const login = (req, res, next) => {
       // создадим токен
       const token = signToken(user); // изменить
 
+      // const token = jwt.sign({ _id: user._id }, 'JWT_SECRET', { expiresIn: '7d' });
+
       // вернём токен
       res.status(StatusCodes.OK).send({ token });
     })
