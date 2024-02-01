@@ -1,4 +1,5 @@
-const baseUrl = "http://localhost:3000";
+// const baseUrl = "http://localhost:3000";
+const baseUrl = "https://api.epicm.nomoredomainsmonster.ru";
 
 // Функция для проверки успешности ответа от сервера
 const checkRes = (res) => {
